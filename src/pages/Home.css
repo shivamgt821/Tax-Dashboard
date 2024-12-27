@@ -1,0 +1,102 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    padding-left: 250px; /* Space for sidebar */
+    width: calc(100% - 250px);
+  }
+  
+  .moving-text-container {
+    background-color: #f0f0f0;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .moving-text {
+    animation: moveText 10s linear infinite;
+    position: absolute;
+  }
+  
+  .moving-text p {
+    margin: 10px 0;
+  }
+  
+  @keyframes moveText {
+    0% {
+      top: 100%;
+    }
+    100% {
+      top: -100%;
+    }
+  }
+  
+  .image-carousel-container, .success-stories-container {
+    margin: 20px 0;
+    height: 300px;
+    background-color: #fff;
+    position: relative;
+  }
+  
+  .carousel {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .carousel-images {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+  }
+  
+  .carousel-images img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    margin: 0 5px;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .carousel-btn {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+  }
+  
+  .carousel-btn.left {
+    position: absolute;
+    left: 10px;
+  }
+  
+  .carousel-btn.right {
+    position: absolute;
+    right: 10px;
+  }
+  
+  .latest-updates-container {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .latest-updates-container .updates {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .latest-updates-container .update {
+    flex: 1;
+    margin: 0 10px;
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  .success-stories-container h2,
+  .latest-updates-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  

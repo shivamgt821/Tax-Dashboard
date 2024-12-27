@@ -1,0 +1,100 @@
+/* .sidebar {
+    width: 400px;
+    background-color: #eeeff6;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    margin: 15px 10px 10px 90px;
+    
+  } */
+  .sidebar {
+    width: 300px; /* Sidebar fixed width */
+    background-color: #eeeff6;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  
+  .sidebar-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    padding: 0px 14px;
+    font-style: Roboto,sans-serif;
+    text-align: left;
+  }
+  
+  .sidebar-items {
+    overflow-y: auto; 
+    max-height: 90vh; 
+    /* padding: 20px; */
+    background-color: #ffffff;
+    margin: 15px;
+  }
+  
+  /* Styling the scrollbar */
+  .sidebar-items::-webkit-scrollbar {
+    width: 6px; /* Makes the scrollbar thinner */
+  }
+  
+  .sidebar-items::-webkit-scrollbar-thumb {
+    /* background-color: #007bff;  */
+    border-radius: 3px; /* Rounds the scrollbar */
+    opacity: 0; /* Initially hidden */
+  }
+  
+  .sidebar-items::-webkit-scrollbar-thumb:hover {
+    /* background-color: #0056b3;  */
+  }
+  
+  .sidebar-items::-webkit-scrollbar-track {
+    /* background-color: transparent;  */
+  }
+  
+  /* Hide scrollbar when not scrolling */
+  .sidebar-items {
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: transparent transparent; /* Hides scrollbar by default */
+  }
+  
+  .sidebar-items:hover {
+    scrollbar-color: #ccc transparent; 
+  }
+  
+  /* Menu styles */
+  .menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .menu-item {
+    margin: 10px 0;
+  }
+  
+  .menu-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 1rem;
+    color: #007bff;
+    padding: 8px 10px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .menu-link:hover {
+    background-color: #e9ecef;
+    color: #0056b3;
+  }
+  
+  .menu-link:active {
+    background-color: #007bff;
+    color: white;
+  }
+  

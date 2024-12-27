@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Form</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container my-4">
+    <h2 class="text-center">Contact</h2>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" href="#">Personal</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Contact</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Physical</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Education</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Education Knowledge</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Skills</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Experience</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Preference</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Declaration</a>
+      </li>
+    </ul>
+
+    <form class="mt-4">
+      <fieldset class="border p-4">
+        <legend class="w-auto px-2">Residential Address</legend>
+
+        <div class="form-group">
+          <label>क्षेत्र:</label><br>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="area" id="rural" value="rural" checked>
+            <label class="form-check-label" for="rural">ग्रामीण</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="area" id="urban" value="urban">
+            <label class="form-check-label" for="urban">नगरीय</label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="state">State *</label>
+            <select id="state" class="form-control">
+              <option selected>Uttar Pradesh</option>
+              <option>...</option>
+            </select>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="district">District *</label>
+            <select id="district" class="form-control">
+              <option selected>--Select One--</option>
+              <option>...</option>
+            </select>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="tehsil">Tehsil *</label>
+            <select id="tehsil" class="form-control">
+              <option selected>--Select One--</option>
+              <option>...</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="block">विकास खंड *</label>
+            <select id="block" class="form-control">
+              <option selected>--Select One--</option>
+              <option>...</option>
+            </select>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="village">Village *</label>
+            <select id="village" class="form-control">
+              <option selected>--Select One--</option>
+              <option>...</option>
+            </select>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="pinCode">Pin Code Number *</label>
+            <select id="pinCode" class="form-control">
+              <option selected>--Select One--</option>
+              <option>...</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="postalAddress">Postal Address *</label>
+          <textarea id="postalAddress" class="form-control" rows="2"></textarea>
+        </div>
+        <p class="text-danger">Please Update Your Resident Address ↑</p>
+
+        <div class="form-group">
+          <label>Permanent Address same as Above:</label><br>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="permanentAddress" id="sameYes" value="yes" checked>
+            <label class="form-check-label" for="sameYes">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="permanentAddress" id="sameNo" value="no">
+            <label class="form-check-label" for="sameNo">No</label>
+          </div>
+        </div>
+
+        <div class="form-group text-center">
+          <button type="submit" class="btn btn-success">Save</button>
+          <button type="button" class="btn btn-danger">Back</button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
