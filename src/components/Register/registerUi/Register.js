@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import BasicDetails from "../BasicDetails";
-import ContactDetails from "./ContactDetails";
+import ContactDetails from "../ContactDetails";
 import TaxRegistrationForm from "./GetStarted";
 
 function Register() {

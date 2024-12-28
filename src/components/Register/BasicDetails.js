@@ -4,7 +4,7 @@ import './BasicDetails.css';
 const BasicDetails = () => {
   return (
     <div className="registration-form">
-      <h2>Registering as - Individual</h2>
+      <h3>Registering as - Individual</h3>
 
       <form>
         <div className="basic-details-form-group">
@@ -49,10 +49,10 @@ const BasicDetails = () => {
           </div>
         </div>
 
-        <div className="basic-details-form-actions">
+        {/* <div className="basic-details-form-actions">
           <button type="button" className="basic-details-back-button">Back</button>
           <button type="submit" className="basic-details-continue-button">Continue</button>
-        </div>
+        </div> */}
       </form>
     </div>
   );

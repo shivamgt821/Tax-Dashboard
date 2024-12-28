@@ -16,18 +16,7 @@ function ContactDetails() {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            fullWidth
-            select
-            label="Primary Mobile Number Belongs to"
-            variant="outlined"
-            required
-          >
-            <MenuItem value="Self">Self</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </TextField>
-        </Grid>
+      
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
@@ -36,21 +25,8 @@ function ContactDetails() {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            fullWidth
-            select
-            label="Primary Email ID Belongs to"
-            variant="outlined"
-            required
-          >
-            <MenuItem value="Self">Self</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={12}>
-          <TextField fullWidth label="Landline Number" variant="outlined" />
-        </Grid>
+      
+        
         <Grid item xs={12}>
           <Typography variant="subtitle1">Postal Address Details</Typography>
         </Grid>
