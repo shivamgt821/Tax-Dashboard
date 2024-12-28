@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, TextField, Grid, Typography, MenuItem } from '@mui/material';
 
-function BasicDetails() {
+function BasicDetails({ onNext }) {
+  const [formFilled, setFormFilled] = useState(false);
+  
+  // Check if the form is filled, you can add your own validation here
+  useEffect(() => {
+    const checkForm = () => {
+      // If all required fields are filled, trigger onNext
+      setFormFilled(true); // You can customize this logic further
+    };
+    checkForm();
+  }, []);
+
+  useEffect(() => {
+    if (formFilled) {
+      onNext(); // Automatically move to next step when form is filled
+    }
+  }, [formFilled, onNext]);
+
   return (
     <Box>
       <Typography variant="h6" gutterBottom>

@@ -100,29 +100,6 @@ export default function TaxRegistrationForm() {
               </Button>
             </Grid>
           </Grid>
-
-          <Grid container spacing={2} mt={4}>
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={handleContinue}
-              >
-                Continue
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                variant="outlined"
-                color="error"
-                onClick={() => console.log("Cancel clicked")}
-              >
-                Cancel
-              </Button>
-            </Grid>
-          </Grid>
         </Box>
 
         <Typography mt={4} variant="caption" color="textSecondary">
