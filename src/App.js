@@ -9,12 +9,13 @@ import Login from './components/Login/Login';
 import Home from './pages/Home'
 import EVerifyReturn from './components/EverifyReturn/EVerifyReturn';
 import EpayTaxForm from './components/EpayTaxForm/EpayTaxForm';
-import Register from './components/Register/Register';
+
 import Registration from './components/Vat/Registration';
 import OTPVerification from './components/Vat/OTPVerification';
 import BasicDetails from './components/Register/BasicDetails';
 import ContactDetails from './components/Register/ContactDetails';
 import OTPPage from './components/Register/OTPPage';
+import Register from './components/Register/registerUi/Register';
 function App() {
   const location = useLocation(); // Get the current route
 
