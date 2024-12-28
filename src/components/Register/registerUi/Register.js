@@ -10,9 +10,10 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import BasicDetails from "../BasicDetails";
+import BasicDetails from "./BasicDetails";
 import ContactDetails from "./ContactDetails";
 import TaxRegistrationForm from "./GetStarted";
+import OTPPage from ".././OTPPage";
 
 function Register() {
   const [activeStep, setActiveStep] = useState(0);
@@ -30,7 +31,7 @@ function Register() {
   };
 
   const moveToNextTab = () => {
-    setTabValue((prev) => prev + 1); // Move to the next tab
+    setTabValue((prev) => prev + 1);
   };
 
   return (
@@ -79,7 +80,11 @@ function Register() {
 
         {activeStep === 2 && (
           <Box sx={{ mt: 4 }}>
-            <Typography variant="h6">Verify Details</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Verify Details
+            </Typography>
+            {/* Render OTPPage here */}
+            <OTPPage />
           </Box>
         )}
 
