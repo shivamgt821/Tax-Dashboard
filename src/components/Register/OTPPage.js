@@ -85,8 +85,7 @@ const OTPPage = () => {
         Note: You can go back and update your details if required.
       </p>
 
-      <button className="otppage-back-button">Back</button>
-      <button className="otppage-continue-button">Continue</button>
+     
      
     </div>
   );

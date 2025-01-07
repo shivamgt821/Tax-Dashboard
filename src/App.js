@@ -13,7 +13,6 @@ import EpayTaxForm from './components/EpayTaxForm/EpayTaxForm';
 import Registration from './components/Vat/Registration';
 import OTPVerification from './components/Vat/OTPVerification';
 import BasicDetails from './components/Register/BasicDetails';
-import ContactDetails from './components/Register/ContactDetails';
 import OTPPage from './components/Register/OTPPage';
 import Register from './components/Register/registerUi/Register';
 function App() {
@@ -24,7 +23,6 @@ function App() {
       <Header />
       <MenuBar />
       
-      {/* Show Sidebar only on the Home page */}
       {location.pathname === '/' && <Sidebar />}
       
       <Routes>
@@ -36,7 +34,6 @@ function App() {
         <Route path="/vat" element={<Registration />} />
         <Route path="/otp" element={<OTPVerification />} />
         <Route path="/basic" element={<BasicDetails />} />
-        <Route path="/contact" element={<ContactDetails />} />
         <Route path="/otppapge" element={<OTPPage />} />
         
         {/* Add other routes here */}

@@ -3,14 +3,44 @@ import './Login.css';
 import panIcons from '../../assets/pan.svg';
 import aadhaarIcon from '../../assets/adhaar.svg';
 import userIdIcon from '../../assets/userId.svg';
+import BASIC_URL from '../../constants';
 
 const Login = () => {
   const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
   const [showMore, setShowMore] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    try {
+      const response = await fetch(`${BASIC_URL}/api/users/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pan: userId, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSuccessMessage(`Welcome, ${data.name}!`);
+        console.log('Login successfull:', data);
+
+        // Optionally, redirect to another page after login success
+        window.location.href = '/vat';
+      } else {
+        const errorData = await response.json();
+        setErrorMessage(errorData.error || 'Invalid login credentials');
+      }
+    } catch (error) {
+      setErrorMessage('Something went wrong. Please try again later.');
+      console.error('Error during login:', error);
+    }
   };
 
   const toggleShowMore = () => {
@@ -22,14 +52,26 @@ const Login = () => {
       <div className="login-card">
         <div className="form-section">
           <h1 className="login-title">Login</h1>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          {successMessage && <p className="success-message">{successMessage}</p>}
           <form onSubmit={handleSubmit}>
-            <div className="input-group">
+            <div className="login-input-group">
               <label>Enter your User ID *</label>
               <input
                 type="text"
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
                 placeholder="PAN/Aadhaar/User ID"
+                required
+              />
+            </div>
+            <div className="login-input-group">
+              <label>Enter your Password *</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
                 required
               />
             </div>

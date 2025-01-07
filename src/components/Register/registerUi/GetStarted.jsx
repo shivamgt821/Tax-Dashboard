@@ -10,30 +10,45 @@ import {
   Grid,
 } from "@mui/material";
 
-export default function TaxRegistrationForm() {
+export default function TaxRegistrationForm({
+  onPanValidation,
+  onContinue,
+  onBack,
+}) {
   const [pan, setPan] = useState("");
-  const [registrationType, setRegistrationType] = useState("taxpayer");
+  const [panError, setPanError] = useState("");
+  const [registrationType, setRegistrationType] = useState("");
+  const [isValidated, setIsValidated] = useState(false);
 
-  const isPanValid = pan.trim().length === 10;
+  const validatePAN = (pan) => {
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    return panRegex.test(pan);
+  };
 
   const handleValidate = () => {
-    if (!isPanValid) {
-      alert("Please enter a valid 10-character PAN.");
+    if (!validatePAN(pan)) {
+      setPanError("Invalid PAN format. Please enter a valid PAN.");
+      onPanValidation(false);
+      setIsValidated(false);
     } else {
+      setPanError("");
       alert(`PAN ${pan} validated successfully!`);
+      onPanValidation(true);
+      setIsValidated(true);
     }
   };
 
   const handleContinue = () => {
-    if (!isPanValid) {
-      alert("Please validate your PAN to continue.");
+    if (isValidated) {
+      onContinue({ pan, registrationType });
+      localStorage.setItem("penDetails", pan);
     } else {
-      alert("Proceeding to the next step...");
+      alert("Please validate your PAN to continue.");
     }
   };
 
   return (
-    <Box sx={{backgroundColor: "#f8fafc", padding: 4 }}>
+    <Box sx={{ backgroundColor: "#f8fafc", padding: 4 }}>
       <Box
         sx={{
           maxWidth: 600,
@@ -44,9 +59,8 @@ export default function TaxRegistrationForm() {
           boxShadow: 1,
         }}
       >
-        <Typography variant="body2" color="textSecondary"textAlign={"left"} >
-          Register and find all your tax data in a single secure platform!{" "}
-          {/* <Box textAlign={"right"} marginTop={"20px"}><span style={{ color: "red" }}>*</span> indicates mandatory fields.</Box> */}
+        <Typography variant="body2" color="textSecondary" textAlign={"left"}>
+          Register and find all your tax data in a single secure platform!
         </Typography>
 
         <Box mt={4}>
@@ -79,32 +93,38 @@ export default function TaxRegistrationForm() {
           <Box mt={3}>
             <TextField
               fullWidth
-              // label="Enter your User ID (PAN)"
               value={pan}
-              onChange={(e) => setPan(e.target.value.toUpperCase())}
-              placeholder="Enter you User id / PAN"
+              onChange={(e) => {
+                const value = e.target.value.toUpperCase();
+                setPan(value);
+                if (!validatePAN(value)) {
+                  setPanError("Invalid PAN format. Please enter a valid PAN.");
+                  setIsValidated(false); 
+                } else {
+                  setPanError("");
+                }
+              }}
+              placeholder="Enter your User ID / PAN"
               variant="outlined"
+              error={!!panError}
+              helperText={panError}
               InputLabelProps={{ shrink: true }}
               required
             />
           </Box>
 
           <Grid container spacing={2} mt={3}>
-            <Grid item xs={4}>
+            <Grid item xs={12}>
               <Button
                 variant="contained"
                 onClick={handleValidate}
                 color="secondary"
-                disabled={!isPanValid}
+                disabled={!pan || !!panError}
                 fullWidth
               >
                 Validate
               </Button>
             </Grid>
-            <Grid item xs={12}>
-            
-            </Grid>
-           
           </Grid>
         </Box>
 
@@ -114,6 +134,23 @@ export default function TaxRegistrationForm() {
           Liability Partnerships, Associations of Persons, Political Parties,
           Governments, and Bodies of Individuals.
         </Typography>
+
+        {/* Back and Continue Buttons */}
+        <Grid container justifyContent="space-between" sx={{ mt: 4 }}>
+          <Button
+            variant="outlined"
+            onClick={onBack}
+          >
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleContinue}
+            disabled={!isValidated} 
+          >
+            Continue
+          </Button>
+        </Grid>
       </Box>
     </Box>
   );
