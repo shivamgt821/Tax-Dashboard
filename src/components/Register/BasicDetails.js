@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./BasicDetails.css";
 import BASIC_URL from "../../constants";
+import { Button, Grid } from "@mui/material";
 
-const BasicDetails = () => {
-  
+const BasicDetails = ({ onBack, onContinue }) => {
   const getPenDetails = localStorage.getItem("penDetails");
-  console.log("Get data from get started",getPenDetails);
+  console.log("Get data from get started", getPenDetails);
+
   const [formData, setFormData] = useState({
     pan: "",
     lastName: "",
@@ -17,42 +18,162 @@ const BasicDetails = () => {
     mobileNumber: "",
     email: "",
     address: {
-      country:"",
+      country: "",
       flat: "",
       street: "",
       pincode: "",
-      postOffice: "",
-      locality: "",
       city: "",
       state: "",
     },
   });
 
+  const [errors, setErrors] = useState({});
   const [countries, setCountries] = useState([]);
+  const [loading, setLoading] = useState(false);
+const [otpMessage, setOtpMessage] = useState("");
 
-    // Fetch countries from the API
-    useEffect(() => {
-      const fetchCountries = async () => {
-        try {
-          console.log("Fetching countries...");
-          const response = await fetch(`${BASIC_URL}/api/countries`);
-          if (response.ok) {
-            const data = await response.json();
-            console.log("Fetched countries:", data);
-            setCountries(data);
-          } else {
-            console.error("Failed to fetch countries.Status:",response.status);
+
+  const validate = () => {
+    const newErrors = {};
+    // Name validation (no integers or special characters)
+    if (!formData.firstName.match(/^[A-Za-z\s]+$/)) {
+      newErrors.firstName = "First Name should only contain alphabets.";
+    }
+    if (formData.middleName && !formData.middleName.match(/^[A-Za-z\s]+$/)) {
+      newErrors.middleName = "Middle Name should only contain alphabets.";
+    }
+    if (!formData.lastName.match(/^[A-Za-z\s]+$/)) {
+      newErrors.lastName = "Last Name should only contain alphabets.";
+    }
+
+    // Required field validation
+    if (!formData.dob) newErrors.dob = "Date of Birth is required.";
+    if (!formData.gender) newErrors.gender = "Gender is required.";
+    if (!formData.residentialStatus)
+      newErrors.residentialStatus = "Residential status is required.";
+
+    // Mobile number validation (10 digits)
+    if (!formData.mobileNumber.match(/^[6-9]\d{9}$/)) {
+      newErrors.mobileNumber = "Enter a valid 10-digit mobile number.";
+    }
+
+    // Email validation
+    if (!formData.email.match(/^\S+@\S+\.\S+$/)) {
+      newErrors.email = "Enter a valid email address.";
+    }
+
+    // Address validations
+    if (!formData.address.country) newErrors.country = "Country is required.";
+    if (!formData.address.flat.trim())
+      newErrors.flat = "Flat/Door/Building is required.";
+    if (!formData.address.pincode.match(/^\d{6}$/)) {
+      newErrors.pincode = "Pincode must be a valid 6-digit number.";
+    }
+    if (!formData.address.city.match(/^[A-Za-z\s]+$/)) {
+      newErrors.city = "City should only contain alphabets.";
+    }
+    if (!formData.address.state.match(/^[A-Za-z\s]+$/)) {
+      newErrors.state = "State should only contain alphabets.";
+    }
+
+    console.log("Validation errors:", newErrors);
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // const handleContinue = () => {
+  //   if (validate()) {
+  //     onContinue();
+
+  //     // Storing each field in localStorage separately
+  //     Object.keys(formData).forEach((key) => {
+  //       if (typeof formData[key] === "object") {
+  //         // Store nested address fields
+  //         Object.keys(formData[key]).forEach((subKey) => {
+  //           localStorage.setItem(subKey, formData[key][subKey]);
+  //         });
+  //       } else {
+  //         localStorage.setItem(key, formData[key]);
+  //       }
+  //     });
+
+  //     console.log("Form Data Saved:", formData);
+  //   } else {
+  //     alert("Please fix the errors in the form.");
+  //   }
+  // };
+
+
+  const handleContinue = async () => {
+    if (validate()) {
+      setLoading(true);
+      setOtpMessage("");
+      try {
+        const otpResponse = await fetch(
+          `http://localhost:8080/api/otp/send?email=${encodeURIComponent(formData.email)}&mobile=${formData.mobileNumber}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
           }
-        } catch (error) {
-          console.error("Error fetching countries:", error);
+        );
+
+        if (otpResponse.ok) {
+          console.log("OTP sent successfully.");
+          onContinue();
+
+          // Storing each field in localStorage separately
+          Object.keys(formData).forEach((key) => {
+            if (typeof formData[key] === "object") {
+              // Store nested address fields
+              Object.keys(formData[key]).forEach((subKey) => {
+                localStorage.setItem(subKey, formData[key][subKey]);
+              });
+            } else {
+              localStorage.setItem(key, formData[key]);
+            }
+          });
+
+          console.log("Form Data Saved:", formData);
+        } else {
+          console.error("Failed to send OTP. Status:", otpResponse.status);
         }
-      };
-  
-      fetchCountries();
-    }, []);
+      } catch (error) {
+        console.error("Error sending OTP:", error);
+      }finally {
+        setLoading(false); // Set loading to false after the request is finished
+      }
+    } else {
+      alert("Please fix the errors in the form.");
+    }
+  };
+
+  // Fetch countries from the API
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        console.log("Fetching countries...");
+        const response = await fetch(`${BASIC_URL}/api/countries`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Fetched countries:", data);
+          setCountries(data);
+        } else {
+          console.error("Failed to fetch countries. Status:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    };
+
+    fetchCountries();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     if (name in formData.address) {
       setFormData({
         ...formData,
@@ -75,7 +196,6 @@ const BasicDetails = () => {
     <div className="registration-form">
       <h3>Registering as - Individual</h3>
       <form onSubmit={handleSubmit}>
-        {/* Basic Details Fields */}
         <div className="basic-details-form-group">
           <label htmlFor="pan">PAN *</label>
           <input
@@ -87,6 +207,7 @@ const BasicDetails = () => {
             onChange={handleChange}
             required
           />
+         
         </div>
 
         <div className="basic-details-form-group">
@@ -100,6 +221,7 @@ const BasicDetails = () => {
             onChange={handleChange}
             required
           />
+          {errors.lastName && <span className="error">{errors.lastName}</span>}
         </div>
 
         <div className="basic-details-form-group">
@@ -112,6 +234,9 @@ const BasicDetails = () => {
             value={formData.middleName}
             onChange={handleChange}
           />
+          {errors.middleName && (
+            <span className="error">{errors.middleName}</span>
+          )}
         </div>
 
         <div className="basic-details-form-group">
@@ -125,6 +250,9 @@ const BasicDetails = () => {
             onChange={handleChange}
             required
           />
+          {errors.firstName && (
+            <span className="error">{errors.firstName}</span>
+          )}
         </div>
 
         <div className="basic-details-form-group">
@@ -137,6 +265,7 @@ const BasicDetails = () => {
             onChange={handleChange}
             required
           />
+          {errors.dob && <span className="error">{errors.dob}</span>}
         </div>
 
         <div className="basic-details-form-group">
@@ -174,6 +303,7 @@ const BasicDetails = () => {
               Transgender
             </label>
           </div>
+          {errors.gender && <span className="error">{errors.gender}</span>}
         </div>
 
         <div className="basic-details-form-group">
@@ -203,7 +333,7 @@ const BasicDetails = () => {
           </div>
         </div>
 
-        {/* Contact Details Fields */}
+        {/* Additional fields with validation */}
         <div className="basic-details-form-group">
           <label htmlFor="mobileNumber">Mobile Number *</label>
           <input
@@ -215,6 +345,9 @@ const BasicDetails = () => {
             onChange={handleChange}
             required
           />
+          {errors.mobileNumber && (
+            <span className="error">{errors.mobileNumber}</span>
+          )}
         </div>
 
         <div className="basic-details-form-group">
@@ -228,11 +361,12 @@ const BasicDetails = () => {
             onChange={handleChange}
             required
           />
+          {errors.email && <span className="error">{errors.email}</span>}
         </div>
 
         <h3>Address Details</h3>
         <div className="basic-details-form-group">
-        <label htmlFor="country">Country *</label>
+          <label htmlFor="country">Country *</label>
           <select
             id="country"
             name="country"
@@ -247,6 +381,10 @@ const BasicDetails = () => {
               </option>
             ))}
           </select>
+          {errors.country && <span className="error">{errors.country}</span>}
+        </div>
+
+        <div className="basic-details-form-group">
           <label htmlFor="flat">Flat/Door/Building *</label>
           <input
             type="text"
@@ -257,15 +395,16 @@ const BasicDetails = () => {
             onChange={handleChange}
             required
           />
+          {errors.flat && <span className="error">{errors.flat}</span>}
         </div>
 
         <div className="basic-details-form-group">
-          <label htmlFor="street">Street/Block/Sector</label>
+          <label htmlFor="street">Street/Area</label>
           <input
             type="text"
             id="street"
             name="street"
-            placeholder="Enter Street/Block/Sector"
+            placeholder="Enter Street/Area"
             value={formData.address.street}
             onChange={handleChange}
           />
@@ -282,6 +421,7 @@ const BasicDetails = () => {
             onChange={handleChange}
             required
           />
+          {errors.pincode && <span className="error">{errors.pincode}</span>}
         </div>
 
         <div className="basic-details-form-group">
@@ -295,6 +435,7 @@ const BasicDetails = () => {
             onChange={handleChange}
             required
           />
+          {errors.city && <span className="error">{errors.city}</span>}
         </div>
 
         <div className="basic-details-form-group">
@@ -308,10 +449,26 @@ const BasicDetails = () => {
             onChange={handleChange}
             required
           />
+          {errors.state && <span className="error">{errors.state}</span>}
         </div>
+        <Grid container justifyContent="space-between" sx={{ mt: 4 }}>
+        <Button variant="outlined" onClick={onBack}>
+          Back
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleContinue}
+          disabled={!validate || loading} // Disable if loading
+        >
+          {loading ? "Sending OTP..." : "Continue"}
+        </Button>
+      </Grid>
 
-    
-      </form>
+      {/* Show OTP Message and Loading Spinner */}
+      {loading && <div className="loading-spinner">Loading...</div>} {/* You can replace with a spinner component */}
+      {otpMessage && <div className="otp-message">{otpMessage}</div>}
+    </form>
+       
     </div>
   );
 };

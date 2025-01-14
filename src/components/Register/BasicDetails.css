@@ -64,3 +64,16 @@ input[type="date"] {
   background: #007bff;
   color: white;
 }
+
+.basic-details-form-group {
+  margin-bottom: 15px;
+  
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  /* font-style: italic; */
+  margin-top: 5px;
+}
+

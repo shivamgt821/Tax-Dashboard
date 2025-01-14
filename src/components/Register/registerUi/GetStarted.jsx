@@ -17,7 +17,7 @@ export default function TaxRegistrationForm({
 }) {
   const [pan, setPan] = useState("");
   const [panError, setPanError] = useState("");
-  const [registrationType, setRegistrationType] = useState("");
+  const [registrationType, setRegistrationType] = useState("taxpayer");
   const [isValidated, setIsValidated] = useState(false);
 
   const validatePAN = (pan) => {

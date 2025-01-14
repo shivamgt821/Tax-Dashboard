@@ -110,11 +110,14 @@ function Register() {
             Back
           </Button>
           <Button
+          
             variant="contained"
             onClick={handleNext}
             disabled={!isPanValidated && activeStep === 0}
+            
           >
             {activeStep === steps.length - 1 ? "Finish" : "Continue"}
+            
           </Button>
         </Grid>
       </Box>
