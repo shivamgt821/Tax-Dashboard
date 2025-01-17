@@ -68,7 +68,7 @@ const Login = () => {
             <div className="login-input-group">
               <label>Enter your Password *</label>
               <input
-                type="password"
+                type="text"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"

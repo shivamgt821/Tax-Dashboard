@@ -29,6 +29,7 @@
 .info-section {
   flex: 1;
   padding: 30px;
+  
 }
 
 .form-section form {
@@ -41,10 +42,12 @@
   margin-bottom: 20px;
   text-align: left;
   margin-left: 30px;
+  
 }
 
 .login-input-group {
   margin-bottom: 20px;
+  
 }
 
 .login-input-group label {
@@ -53,11 +56,14 @@
   color: #666;
   margin-bottom: 8px;
   text-align: left;
+  /* border: 2px solid red; */
+  
+  
 }
 
 .login-input-group input {
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 4px; 
 }
 
 .continue-btn,
@@ -114,6 +120,7 @@
 .info-section {
   font-family: Arial, sans-serif;
   margin: 20px;
+  
 }
 .info-section h3 {
   text-align: start;
@@ -126,6 +133,7 @@
   /* border: 2px solid red; */
   text-align: start;
   width: 90%;
+  
 }
 
 .login-info-icon {
@@ -137,13 +145,14 @@
 .login-info-content h3 {
   margin: 0;
   font-size: 1.2rem;
+  
 }
 
 .login-info-content p {
   margin: 5px 0;
   justify-content: left;
   text-align: start;
-  /* border: 2px solid red; */
+  
 }
 
 .login-info-content ul {

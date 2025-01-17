@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./BasicDetails.css";
 import BASIC_URL from "../../constants";
 import { Button, Grid } from "@mui/material";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const BasicDetails = ({ onBack, onContinue }) => {
   const getPenDetails = localStorage.getItem("penDetails");
@@ -12,15 +14,16 @@ const BasicDetails = ({ onBack, onContinue }) => {
     lastName: "",
     middleName: "",
     firstName: "",
-    dob: "",
+    dateOfBirth: "",
     gender: "",
     residentialStatus: "",
     mobileNumber: "",
     email: "",
+    password: "",
     address: {
       country: "",
-      flat: "",
-      street: "",
+      flatOrDoor: "",
+      streetBlock: "",
       pincode: "",
       city: "",
       state: "",
@@ -30,8 +33,7 @@ const BasicDetails = ({ onBack, onContinue }) => {
   const [errors, setErrors] = useState({});
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(false);
-const [otpMessage, setOtpMessage] = useState("");
-
+  const [otpMessage, setOtpMessage] = useState("");
 
   const validate = () => {
     const newErrors = {};
@@ -47,15 +49,20 @@ const [otpMessage, setOtpMessage] = useState("");
     }
 
     // Required field validation
-    if (!formData.dob) newErrors.dob = "Date of Birth is required.";
+    if (!formData.dateOfBirth) newErrors.dateOfBirth = "Date of Birth is required.";
     if (!formData.gender) newErrors.gender = "Gender is required.";
     if (!formData.residentialStatus)
       newErrors.residentialStatus = "Residential status is required.";
 
-    // Mobile number validation (10 digits)
-    if (!formData.mobileNumber.match(/^[6-9]\d{9}$/)) {
-      newErrors.mobileNumber = "Enter a valid 10-digit mobile number.";
-    }
+    // Mobile number validation (only numbers and '+' allowed, field cannot be empty)
+  if (!formData.mobileNumber.trim()) {
+    newErrors.mobileNumber = "Please fill in the mobile number.";
+  } else if (!formData.mobileNumber.match(/^\+?[0-9]+$/)) {
+    newErrors.mobileNumber =
+      "Mobile number should only contain numbers and optionally start with '+'.";
+  }
+  
+
 
     // Email validation
     if (!formData.email.match(/^\S+@\S+\.\S+$/)) {
@@ -64,8 +71,8 @@ const [otpMessage, setOtpMessage] = useState("");
 
     // Address validations
     if (!formData.address.country) newErrors.country = "Country is required.";
-    if (!formData.address.flat.trim())
-      newErrors.flat = "Flat/Door/Building is required.";
+    if (!formData.address.flatOrDoor.trim())
+      newErrors.flatOrDoor = "flat/Door/Building is required.";
     if (!formData.address.pincode.match(/^\d{6}$/)) {
       newErrors.pincode = "Pincode must be a valid 6-digit number.";
     }
@@ -81,41 +88,19 @@ const [otpMessage, setOtpMessage] = useState("");
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
-  // const handleContinue = () => {
-  //   if (validate()) {
-  //     onContinue();
-
-  //     // Storing each field in localStorage separately
-  //     Object.keys(formData).forEach((key) => {
-  //       if (typeof formData[key] === "object") {
-  //         // Store nested address fields
-  //         Object.keys(formData[key]).forEach((subKey) => {
-  //           localStorage.setItem(subKey, formData[key][subKey]);
-  //         });
-  //       } else {
-  //         localStorage.setItem(key, formData[key]);
-  //       }
-  //     });
-
-  //     console.log("Form Data Saved:", formData);
-  //   } else {
-  //     alert("Please fix the errors in the form.");
-  //   }
-  // };
-
-
   const handleContinue = async () => {
     if (validate()) {
       setLoading(true);
       setOtpMessage("");
       try {
         const otpResponse = await fetch(
-          `http://localhost:8080/api/otp/send?email=${encodeURIComponent(formData.email)}&mobile=${formData.mobileNumber}`,
+          `http://localhost:8080/api/otp/send?email=${encodeURIComponent(
+            formData.email
+          )}&mobile=${formData.mobileNumber}`,
           {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           }
         );
@@ -142,8 +127,8 @@ const [otpMessage, setOtpMessage] = useState("");
         }
       } catch (error) {
         console.error("Error sending OTP:", error);
-      }finally {
-        setLoading(false); // Set loading to false after the request is finished
+      } finally {
+        setLoading(false); 
       }
     } else {
       alert("Please fix the errors in the form.");
@@ -203,13 +188,12 @@ const [otpMessage, setOtpMessage] = useState("");
             id="pan"
             name="pan"
             placeholder="Enter PAN"
-            value={getPenDetails}
+            // value={formData.pan}
+            value={formData.getPenDetails}
             onChange={handleChange}
             required
           />
-         
         </div>
-
         <div className="basic-details-form-group">
           <label htmlFor="lastName">Last Name *</label>
           <input
@@ -223,7 +207,6 @@ const [otpMessage, setOtpMessage] = useState("");
           />
           {errors.lastName && <span className="error">{errors.lastName}</span>}
         </div>
-
         <div className="basic-details-form-group">
           <label htmlFor="middleName">Middle Name</label>
           <input
@@ -238,7 +221,6 @@ const [otpMessage, setOtpMessage] = useState("");
             <span className="error">{errors.middleName}</span>
           )}
         </div>
-
         <div className="basic-details-form-group">
           <label htmlFor="firstName">First Name *</label>
           <input
@@ -254,20 +236,18 @@ const [otpMessage, setOtpMessage] = useState("");
             <span className="error">{errors.firstName}</span>
           )}
         </div>
-
         <div className="basic-details-form-group">
-          <label htmlFor="dob">Date of Birth *</label>
+          <label htmlFor="dateOfBirth">Date of Birth *</label>
           <input
             type="date"
-            id="dob"
-            name="dob"
-            value={formData.dob}
+            id="dateOfBirth"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
             onChange={handleChange}
             required
           />
-          {errors.dob && <span className="error">{errors.dob}</span>}
+          {errors.dateOfBirth && <span className="error">{errors.dateOfBirth}</span>}
         </div>
-
         <div className="basic-details-form-group">
           <label>Gender *</label>
           <div className="gender-options">
@@ -305,7 +285,6 @@ const [otpMessage, setOtpMessage] = useState("");
           </div>
           {errors.gender && <span className="error">{errors.gender}</span>}
         </div>
-
         <div className="basic-details-form-group">
           <label>Residential Status *</label>
           <div className="residential-options">
@@ -333,23 +312,20 @@ const [otpMessage, setOtpMessage] = useState("");
           </div>
         </div>
 
-        {/* Additional fields with validation */}
         <div className="basic-details-form-group">
           <label htmlFor="mobileNumber">Mobile Number *</label>
-          <input
-            type="text"
-            id="mobileNumber"
-            name="mobileNumber"
-            placeholder="Enter Mobile Number"
+          <PhoneInput
+            country={"in"}
             value={formData.mobileNumber}
-            onChange={handleChange}
-            required
+            onChange={(phone) =>
+              setFormData({ ...formData, mobileNumber: phone })
+            }
+            inputStyle={{ width: "100%" }} // Adjust width
           />
           {errors.mobileNumber && (
             <span className="error">{errors.mobileNumber}</span>
           )}
         </div>
-
         <div className="basic-details-form-group">
           <label htmlFor="email">Email *</label>
           <input
@@ -363,7 +339,20 @@ const [otpMessage, setOtpMessage] = useState("");
           />
           {errors.email && <span className="error">{errors.email}</span>}
         </div>
-
+         {/* Password Field */}
+         <div className="basic-details-form-group">
+          <label htmlFor="password">Password *</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+          {errors.password && <span className="error">{errors.password}</span>}
+        </div>
         <h3>Address Details</h3>
         <div className="basic-details-form-group">
           <label htmlFor="country">Country *</label>
@@ -383,33 +372,30 @@ const [otpMessage, setOtpMessage] = useState("");
           </select>
           {errors.country && <span className="error">{errors.country}</span>}
         </div>
-
         <div className="basic-details-form-group">
-          <label htmlFor="flat">Flat/Door/Building *</label>
+          <label htmlFor="flatOrDoor">flatOrDoor/Door/Building *</label>
           <input
             type="text"
-            id="flat"
-            name="flat"
-            placeholder="Enter Flat/Door/Building"
-            value={formData.address.flat}
+            id="flatOrDoor"
+            name="flatOrDoor"
+            placeholder="Enter flatOrDoor/Door/Building"
+            value={formData.address.flatOrDoor}
             onChange={handleChange}
             required
           />
-          {errors.flat && <span className="error">{errors.flat}</span>}
+          {errors.flatOrDoor && <span className="error">{errors.flatOrDoor}</span>}
         </div>
-
         <div className="basic-details-form-group">
-          <label htmlFor="street">Street/Area</label>
+          <label htmlFor="streetBlock">streetBlock/Area</label>
           <input
             type="text"
-            id="street"
-            name="street"
-            placeholder="Enter Street/Area"
-            value={formData.address.street}
+            id="streetBlock"
+            name="streetBlock"
+            placeholder="Enter streetBlock/Area"
+            value={formData.address.streetBlock}
             onChange={handleChange}
           />
         </div>
-
         <div className="basic-details-form-group">
           <label htmlFor="pincode">Pincode *</label>
           <input
@@ -423,7 +409,6 @@ const [otpMessage, setOtpMessage] = useState("");
           />
           {errors.pincode && <span className="error">{errors.pincode}</span>}
         </div>
-
         <div className="basic-details-form-group">
           <label htmlFor="city">City *</label>
           <input
@@ -437,7 +422,6 @@ const [otpMessage, setOtpMessage] = useState("");
           />
           {errors.city && <span className="error">{errors.city}</span>}
         </div>
-
         <div className="basic-details-form-group">
           <label htmlFor="state">State *</label>
           <input
@@ -452,23 +436,22 @@ const [otpMessage, setOtpMessage] = useState("");
           {errors.state && <span className="error">{errors.state}</span>}
         </div>
         <Grid container justifyContent="space-between" sx={{ mt: 4 }}>
-        <Button variant="outlined" onClick={onBack}>
-          Back
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleContinue}
-          disabled={!validate || loading} // Disable if loading
-        >
-          {loading ? "Sending OTP..." : "Continue"}
-        </Button>
-      </Grid>
-
-      {/* Show OTP Message and Loading Spinner */}
-      {loading && <div className="loading-spinner">Loading...</div>} {/* You can replace with a spinner component */}
-      {otpMessage && <div className="otp-message">{otpMessage}</div>}
-    </form>
-       
+          <Button variant="outlined" onClick={onBack}>
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleContinue}
+            disabled={!validate || loading} // Disable if loading
+          >
+            {loading ? "Sending OTP..." : "Continue"}
+          </Button>
+        </Grid>
+        {/* Show OTP Message and Loading Spinner */}
+        {loading && <div className="loading-spinner">Loading...</div>}{" "}
+        {/* You can replace with a spinner component */}
+        {otpMessage && <div className="otp-message">{otpMessage}</div>}
+      </form>
     </div>
   );
 };

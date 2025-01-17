@@ -46,6 +46,7 @@ export default function TaxRegistrationForm({
       alert("Please validate your PAN to continue.");
     }
   };
+  
 
   return (
     <Box sx={{ backgroundColor: "#f8fafc", padding: 4 }}>

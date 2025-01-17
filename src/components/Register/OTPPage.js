@@ -1,9 +1,18 @@
-// import React, { useState } from "react";
+// import React, { useState, useEffect } from "react";
 // import "./OTPPage.css"; // Assume you have a CSS file for styling
+// import { SiOutline } from "react-icons/si";
 
 // const OTPPage = () => {
 //   const [mobileOTP, setMobileOTP] = useState(["", "", "", "", "", ""]);
 //   const [emailOTP, setEmailOTP] = useState(["", "", "", "", "", ""]);
+//   const [isVerifying, setIsVerifying] = useState(false); // To handle API call state
+
+//   // Trigger verification when both OTPs are complete
+//   useEffect(() => {
+//     if (mobileOTP.join("").length === 6 && emailOTP.join("").length === 6) {
+//       verifyOTP();
+//     }
+//   }, [mobileOTP, emailOTP]);
 
 //   const handleInputChange = (event, index, type) => {
 //     const value = event.target.value.slice(-1);
@@ -22,47 +31,52 @@
 //       newEmailOTP[index] = value;
 //       setEmailOTP(newEmailOTP);
 
+//       // Move to the next input if not the last box
 //       if (value && index < 5) {
 //         document.getElementById(`email-otp-${index + 1}`).focus();
 //       }
 //     }
 //   };
 
-//   const onComplete = () => {
-//     // Retrieve data from localStorage
-//     const retrievedDetails = {
-//       pan: localStorage.getItem("pan"),
-//       lastName: localStorage.getItem("lastName"),
-//       middleName: localStorage.getItem("middleName"),
-//       firstName: localStorage.getItem("firstName"),
-//       dob: localStorage.getItem("dob"),
-//       gender: localStorage.getItem("gender"),
-//       residentialStatus: localStorage.getItem("residentialStatus"),
-//       mobileNumber: localStorage.getItem("mobileNumber"),
-//       email: localStorage.getItem("email"),
-//       address: {
-//         country: localStorage.getItem("country"),
-//         flat: localStorage.getItem("flat"),
-//         street: localStorage.getItem("street"),
-//         pincode: localStorage.getItem("pincode"),
-//         city: localStorage.getItem("city"),
-//         state: localStorage.getItem("state"),
-//       },
-//     };
+//   const verifyOTP = async () => {
 
-//     console.log("Retrieved Basic Details:", retrievedDetails);
+//     const mobileOTPString = mobileOTP.join("");
+//     const emailOTPString = emailOTP.join("");
 
-//     // Save the entire object back into localStorage as a single entry
-//     localStorage.setItem(
-//       "CompleteBasicDetails",
-//       JSON.stringify(retrievedDetails)
-//     );
-
-//     // Validate OTPs
-//     if (mobileOTP.join("").length === 6 && emailOTP.join("").length === 6) {
-//       console.log("OTP process completed");
-//     } else {
-//       alert("Please complete both OTPs before finishing.");
+//     if (mobileOTPString.length === 6 && emailOTPString.length === 6) {
+//       setIsVerifying(true);
+//       const requestData = {
+//         phoneNumber: localStorage.getItem("mobileNumber"), 
+//         otpCode: mobileOTPString,
+//         email: localStorage.getItem("email"),
+//         otpCodeEmail: emailOTPString,
+//       };
+//       console.log("Request Payload:", requestData);
+//       try {
+//         console.log("process started");
+//         const response = await fetch("http://localhost:8080/api/otp/verifyOTP", {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//           body: JSON.stringify(requestData),
+//         });
+//         console.log("start 1" +response);
+//         if (!response.ok) {
+//           const errorData = await response.text();
+//           console.error("Error Response:", errorData);
+//           throw new Error(`OTP verification failed: ${errorData}`);
+//         }
+//         console.log("start 2");
+//         const result = await response.json();
+//         console.log("Verification Success:", result);
+//         alert("OTP verification successful!");
+//       } catch (error) {
+//         console.error("Error during OTP verification:", error);
+//         alert(`OTP verification failed. Reason: ${error.message}`);
+//       } finally {
+//         setIsVerifying(false);
+//       }
 //     }
 //   };
 
@@ -75,7 +89,7 @@
 //       <h1>Enter the OTP</h1>
 //       <p>
 //         We have sent a One Time Password (OTP) in a text message (SMS) to your
-//         Primary mobile number 91xxxxxx73 and primary email id
+//         Primary mobile number +91xxxxxx73 and primary email id
 //         abc******34@gmail.com
 //       </p>
 
@@ -124,36 +138,31 @@
 //         Note: You can go back and update your details if required.
 //       </p>
 
-//       {/* <button
-//         className="finish-button"
-//         onClick={() => {
-//           if (
-//             mobileOTP.join("").length === 6 &&
-//             emailOTP.join("").length === 6
-//           ) {
-//             onComplete();
-//             const getBasicDetails = localStorage.getItem("BasicDetails");
-//             console.log("Get data from get started", getBasicDetails);
-//           } else {
-//             alert("Please complete both OTPs before finishing.");
-//           }
-//         }}
-//       >
-//         Finish
-//       </button> */}
+//       {isVerifying && <p>Verifying OTPs...</p>}
 //     </div>
 //   );
 // };
 
 // export default OTPPage;
 
-import React, { useState } from "react";
-import "./OTPPage.css"; // Assume you have a CSS file for styling
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; 
+import "./OTPPage.css";
+import { Button } from "@mui/material";
+import BASIC_URL from "../../constants";
 
 const OTPPage = () => {
   const [mobileOTP, setMobileOTP] = useState(["", "", "", "", "", ""]);
   const [emailOTP, setEmailOTP] = useState(["", "", "", "", "", ""]);
-  const [isVerifying, setIsVerifying] = useState(false); // To handle API call state
+  const [isVerifying, setIsVerifying] = useState(false);
+  const navigate = useNavigate();
+
+  // Trigger verification when both OTPs are complete
+  useEffect(() => {
+    if (mobileOTP.join("").length === 6 && emailOTP.join("").length === 6) {
+      verifyOTP();
+    }
+  }, [mobileOTP, emailOTP]);
 
   const handleInputChange = (event, index, type) => {
     const value = event.target.value.slice(-1);
@@ -176,93 +185,23 @@ const OTPPage = () => {
       if (value && index < 5) {
         document.getElementById(`email-otp-${index + 1}`).focus();
       }
-
-      // If this is the last digit of the email OTP, trigger API call
-      if (value && index === 5) {
-        verifyOTP(mobileOTP, newEmailOTP);                                                             //
-      }
     }
   };
 
-  // const verifyOTP = async (mobileOTPArray, emailOTPArray) => {
-
-  //   const mobileOTPString = mobileOTPArray.join("");
-  //   const emailOTPString = emailOTPArray.join("");
+  const verifyOTP = async () => {
+    const mobileOTPString = mobileOTP.join("");
+    const emailOTPString = emailOTP.join("");
   
-  //   if (mobileOTPString.length === 6 && emailOTPString.length === 6) {
-  //     setIsVerifying(true);
-  
-  //     const retrievedDetails = {
-  //       mobileNumber: localStorage.getItem("mobileNumber"),
-  //       email: localStorage.getItem("email"),
-  //     };
-  
-  //     const requestData = {
-  //       phoneNumber: retrievedDetails.mobileNumber,
-  //       otpCode: mobileOTPString,
-  //       email: retrievedDetails.email,
-  //       otpCodeEmail: emailOTPString,
-  //     };
-  
-  //     console.log("Request Payload", requestData); // Debugging log
-  
-  //     try {
-  //       const response = await fetch("http://localhost:8080/api/otp/verifyOTP", {                        //
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(requestData),
-  //       });
-  
-  //       console.log("API Response Status:", response.status); // Debugging log
-  //       if (!response.ok) {
-  //         const errorData = await response.text();
-  //         throw new Error(`OTP verification failed: ${errorData}`);
-  //       }
-  
-  //       const result = await response.json();
-  //       console.log("Verification Success:", result);
-  //       alert("OTP verification successful!");
-  //     } catch (error) {
-  //       console.error("Error during OTP verification:", error);
-  //       alert("OTP verification failed. Please try again.");
-  //     } finally {
-  //       setIsVerifying(false);
-  //     }
-  //   } else {
-  //     alert("Please complete both OTPs before verification.");
-  //   }
-  // };
-  
-
-  const verifyOTP = async (mobileOTPArray, emailOTPArray) => {
-    const mobileOTPString = mobileOTPArray.join("");
-    const emailOTPString = emailOTPArray.join("");
-    
     if (mobileOTPString.length === 6 && emailOTPString.length === 6) {
       setIsVerifying(true);
-  
-      const mobileNumber = localStorage.getItem("mobileNumber");
-      const email = localStorage.getItem("email");
-  
-      if (!mobileNumber || !email) {
-        alert("Missing required data from localStorage.");
-        setIsVerifying(false);
-        return;
-      }
-  
       const requestData = {
-        phoneNumber: mobileNumber,
+        phoneNumber: `+${localStorage.getItem("mobileNumber")}`,
         otpCode: mobileOTPString,
-        email: email,
+        email: localStorage.getItem("email"),
         otpCodeEmail: emailOTPString,
       };
-  
-      console.log("Request Payload:", requestData);
-  
       try {
-        const response = await fetch("http://localhost:8080/api/otp/verifyOTP", {
+        const response = await fetch(`${BASIC_URL}/api/otp/verifyOTP`, { 
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -272,21 +211,68 @@ const OTPPage = () => {
   
         if (!response.ok) {
           const errorData = await response.text();
-          console.log("API Error Response:", errorData);
-         throw new Error(`OTP verification failed: ${errorData}`);
+          throw new Error(`OTP verification failed: ${errorData}`);
         }
-  
-        const result = await response.json();
-        console.log("Verification Success:", result);
         alert("OTP verification successful!");
       } catch (error) {
-        console.error("Error during OTP verification:", error);
-        alert("OTP verification failed. Please try again.");
+        alert(`OTP verification failed. Reason: ${error.message}`);
       } finally {
         setIsVerifying(false);
       }
-    } else {
-      alert("Please complete both OTPs before verification.");
+    }
+  };
+  
+
+  const handleFinish = async () => {
+    const userData = {
+      pan: localStorage.getItem("pan"), 
+      lastName: localStorage.getItem("lastName"),
+      middleName: localStorage.getItem("middleName"),
+      firstName: localStorage.getItem("firstName"),
+      dateOfBirth: localStorage.getItem("dateOfBirth"),
+      gender: localStorage.getItem("gender")?.toUpperCase(),
+      residentialStatus: localStorage.getItem("residentialStatus")?.toUpperCase(),
+      mobileNumber: localStorage.getItem("mobileNumber"),
+      email: localStorage.getItem("email"),
+      password: localStorage.getItem("password"),
+      address: {
+        country: localStorage.getItem("country"),
+        flatOrDoor: localStorage.getItem("flatOrDoor"),
+        streetBlock: localStorage.getItem("streetBlock"),
+        pincode: localStorage.getItem("pincode"),
+        city: localStorage.getItem("city"),
+        state: localStorage.getItem("state"),
+      },
+    };
+    
+    try {
+      
+      setIsVerifying(true);
+      const response = await fetch(`${BASIC_URL}/api/users/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+        
+      });
+      console.log("Payload Sent to API:", userData);
+
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`User registration failed: ${errorData}`);
+      }
+
+      const result = await response.json();
+      console.log("User saved successfully:", result);
+      alert("Registration successful! Redirecting to login page...");
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert(`Registration failed. Reason: ${error.message}`);
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -299,7 +285,7 @@ const OTPPage = () => {
       <h1>Enter the OTP</h1>
       <p>
         We have sent a One Time Password (OTP) in a text message (SMS) to your
-        Primary mobile number 91xxxxxx73 and primary email id
+        primary mobile number +91xxxxxx73 and primary email id
         abc******34@gmail.com
       </p>
 
@@ -329,14 +315,14 @@ const OTPPage = () => {
               type="text"
               maxLength="1"
               value={digit}
-              onChange={(e) => handleInputChange(e, index, "email")}                                // 
+              onChange={(e) => handleInputChange(e, index, "email")}
             />
           ))}
         </div>
       </div>
 
       <div className="otp-timer">
-        <p>Both OTP expires in 14m:45s</p>
+        <p>Both OTPs expire in 14m:45s</p>
         <p>3 Attempts remaining</p>
       </div>
 
@@ -344,14 +330,15 @@ const OTPPage = () => {
         Resend OTP (Allowed only once)
       </button>
 
-      <p className="note">
-        Note: You can go back and update your details if required.
-      </p>
+      <Button className="finish-button" onClick={handleFinish}>
+        Finish
+      </Button>
 
-      {isVerifying && <p>Verifying OTPs...</p>}
+      {isVerifying && <p>Processing...</p>}
     </div>
   );
 };
 
 export default OTPPage;
+
 
